@@ -30,16 +30,16 @@ fi
 if [ -e /data/media/0/ArchiDroid/Backups/efs.tar.gz ]; then
 	mv /data/media/0/ArchiDroid/Backups/efs.tar.gz /data/media/0/ArchiDroid/Backups/efs_OLD.tar.gz
 fi
-mount /dev/block/mmcblk0p3 /efs
-busybox tar zcvf /data/media/0/ArchiDroid/Backups/efs.tar.gz /efs
-umount /efs
+#mount /dev/block/mmcblk0p3 /efs
+#busybox tar zcvf /data/media/0/ArchiDroid/Backups/efs.tar.gz /efs
+#umount /efs
 
-DATE1=`stat /data/media/0/ArchiDroid/Backups/efs.tar.gz | tail -n 2 | head -n 1`
-echo "efs.tar.gz $DATE1" >  /data/media/0/ArchiDroid/Backups/efs.txt
-if [ -e /data/media/0/ArchiDroid/Backups/efs_OLD.tar.gz ]; then
-	DATE2=`stat /data/media/0/ArchiDroid/Backups/efs_OLD.tar.gz | tail -n 2 | head -n 1`
-	echo "efs_OLD.tar.gz $DATE2" >>  /data/media/0/ArchiDroid/Backups/efs.txt
-fi
+#DATE1=`stat /data/media/0/ArchiDroid/Backups/efs.tar.gz | tail -n 2 | head -n 1`
+#echo "efs.tar.gz $DATE1" >  /data/media/0/ArchiDroid/Backups/efs.txt
+#if [ -e /data/media/0/ArchiDroid/Backups/efs_OLD.tar.gz ]; then
+	#DATE2=`stat /data/media/0/ArchiDroid/Backups/efs_OLD.tar.gz | tail -n 2 | head -n 1`
+	#echo "efs_OLD.tar.gz $DATE2" >>  /data/media/0/ArchiDroid/Backups/efs.txt
+#fi
 echo "
 ArchiDroid performed a backup of your /efs partition just in case. Here you can find two most recent backups with dates above.
 Backups are stored in compressed tar (gzip) format. They include directory structure so should be extracted to the root / of the filesystem instead of /efs.

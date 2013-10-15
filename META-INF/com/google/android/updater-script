@@ -3,9 +3,7 @@
 #
 ui_print(">>> ArchiDroid is now loading...");
 sleep (1);
-assert(getprop("ro.product.device") == "m0" || getprop("ro.build.product") == "m0" || 
-       getprop("ro.product.device") == "i9300" || getprop("ro.build.product") == "i9300" || 
-       getprop("ro.product.device") == "GT-I9300" || getprop("ro.build.product") == "GT-I9300");
+assert(getprop("ro.product.device") == "mako" || getprop("ro.build.product") == "mako");
 ui_print("<b><#ff0000>root</#><#ecec36>@</#><#0cdfdf>ArchiDroid</#><#ecec36>:~</#><#c00cdf>#</#></b> Ready!");
 set_progress(0.01);
 sleep (2);
@@ -18,7 +16,7 @@ assert(unmount("/system") || ui_print("(system is unmounted already)"));
 set_progress(0.02);
 
 if file_getprop("/tmp/aroma-data/archidroidwipe.prop","wipe") == "no" then
-	mount("ext4", "EMMC", "/dev/block/mmcblk0p9", "/system");
+	mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
 	package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");
 	package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");
 	set_perm(0, 0, 0777, "/tmp/backuptool.sh");
@@ -31,22 +29,22 @@ set_progress(0.03);
 
 ui_print("<b><#ff0000>root</#><#ecec36>@</#><#0cdfdf>ArchiDroid</#><#ecec36>:~</#><#c00cdf>#</#></b> Formatting Partitions");
 #format("ext4", "EMMC", "/dev/block/mmcblk0p8", "0");
-format("ext4", "EMMC", "/dev/block/mmcblk0p9", "0", "/system");
+format("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "0", "/system");
 #format("ext4", "EMMC", "/dev/block/mmcblk0p10", "0");
 
 set_progress(0.05);
 
 ui_print("<b><#ff0000>root</#><#ecec36>@</#><#0cdfdf>ArchiDroid</#><#ecec36>:~</#><#c00cdf>#</#></b> Checking Partitions For Errors");
 #run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p8");
-run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p9");
+run_program("/sbin/e2fsck", "-p", "/dev/block/platform/msm_sdcc.1/by-name/system");
 #run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p10");
 #run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p12");
 
 set_progress(0.06);
 
 ui_print("<b><#ff0000>root</#><#ecec36>@</#><#0cdfdf>ArchiDroid</#><#ecec36>:~</#><#c00cdf>#</#></b> Mounting Partitions");
-assert(mount("ext4", "EMMC", "/dev/block/mmcblk0p9", "/system") || ui_print("(system is mounted already)"));
-assert(mount("ext4", "EMMC", "/dev/block/mmcblk0p12", "/data") || ui_print("(data is mounted already)"));
+assert(mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system") || ui_print("(system is mounted already)"));
+#assert(mount("ext4", "EMMC", "/dev/block/mmcblk0p12", "/data") || ui_print("(data is mounted already)"));
 
 set_progress(0.07);
 #package_extract_file("_archidroid/scripts/bash", "/tmp/bash");
@@ -100,6 +98,10 @@ set_progress(0.51);
 ui_print("<b><#ff0000>root</#><#ecec36>@</#><#0cdfdf>ArchiDroid</#><#ecec36>:~</#><#c00cdf>#</#></b> Creating symlinks");
 
 symlink("../xbin/su", "/system/bin/su");
+symlink("/data/misc/audio/mbhc.bin", "/system/etc/firmware/wcd9310/wcd9310_mbhc.bin");
+symlink("/data/misc/audio/wcd9310_anc.bin", "/system/etc/firmware/wcd9310/wcd9310_anc.bin");
+symlink("/data/misc/wifi/WCNSS_qcom_cfg.ini", "/system/vendor/firmware/wlan/prima/WCNSS_qcom_cfg.ini");
+symlink("/data/misc/wifi/WCNSS_qcom_wlan_nv.bin", "/system/vendor/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin");
 symlink("Roboto-Bold.ttf", "/system/fonts/DroidSans-Bold.ttf");
 symlink("Roboto-Regular.ttf", "/system/fonts/DroidSans.ttf");
 symlink("busybox", "/system/xbin/[", "/system/xbin/[[",
@@ -234,9 +236,15 @@ set_perm(0, 2000, 0755, "/system/vendor");
 set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/etc");
 set_perm(0, 0, 0644, "/system/vendor/etc/audio_effects.conf");
 set_perm(0, 2000, 0755, "/system/vendor/firmware");
+set_perm(0, 2000, 0755, "/system/vendor/firmware/discretix");
+set_perm(0, 2000, 0755, "/system/vendor/firmware/keymaster");
+set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/firmware/wlan");
+set_perm(0, 0, 0644, "/system/vendor/firmware/wlan/prima/WCNSS_cfg.dat");
 set_perm(0, 2000, 0755, "/system/vendor/lib");
 set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/lib/drm");
 set_perm(0, 0, 0644, "/system/vendor/lib/drm/libdrmwvmplugin.so");
+set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/lib/mediadrm");
+set_perm(0, 0, 0644, "/system/vendor/lib/mediadrm/libwvdrmengine.so");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
 set_perm(0, 0, 06755, "/system/xbin/librank");
 set_perm(0, 0, 06755, "/system/xbin/procmem");
@@ -252,7 +260,7 @@ set_progress(0.54);
 
 # We need to make sure that current kernel is CM-based to prevent random zygote kernel panics
 ui_print("<b><#ff0000>root</#><#ecec36>@</#><#0cdfdf>ArchiDroid</#><#ecec36>:~</#><#c00cdf>#</#></b> Cleaning Old Kernel");
-package_extract_file("boot.img", "/dev/block/mmcblk0p5");
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
 
 ### TEMASEK ###
 if file_getprop("/tmp/aroma-data/archidroid.prop","kernel") == "temasek" then
@@ -914,7 +922,7 @@ run_program("/tmp/busybox","umount","/sd-ext");
 
 	# Freeze fix
 	sleep (1);
-	assert(mount("ext4", "EMMC", "/dev/block/mmcblk0p9", "/system") || ui_print("(system is mounted already)"));
+	assert(mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system") || ui_print("(system is mounted already)"));
 	#assert(mount("ext4", "EMMC", "/dev/block/mmcblk0p12", "/data") || ui_print("(data is mounted already)"));
 endif;
 
